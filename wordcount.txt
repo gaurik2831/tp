@@ -1,0 +1,13 @@
+import org.apache.spark.SparkContext
+var sc = new SparkContext()
+var map = sc.textFile("/mnt/spark/bin/new.txt").flatMap(line => line.split(" ")).map(word
+=>(word,1));
+println(map)
+var counts = map.reduceByKey(_ + _);
+println("count=", counts.count)
+val keysRdd = counts.keys
+val sorted = keysRdd.sortBy(x=> x, true)
+sorted.collect
+val m = counts.max
+counts.saveAsTextFile("/mnt/spark/bin/WD_txt")
+sorted.saveAsTextFile("/mnt/spark/bin/sort_txt")
